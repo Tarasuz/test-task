@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --card-bg: #1a1a2e;
+  --card-front: #16213e;
+  --accent: #e94560;
+  --accent-dim: #c73e54;
+  --success: #0f3460;
+  --text: #eaeaea;
+}
+
+body {
+  font-family: 'Outfit', system-ui, sans-serif;
+  background: #0f0f23;
+  min-height: 100vh;
+  color: var(--text);
+}
