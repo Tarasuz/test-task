@@ -1,44 +1,59 @@
-import { useState } from 'react';
-import { useSocket } from './useSocket';
-import { Lobby } from './components/Lobby';
-import { GameBoard } from './components/GameBoard';
+import { Box, Heading, Text } from "@chakra-ui/react";
+import { useState } from "react";
+import { GameBoard } from "./components/GameBoard";
+import { Lobby } from "./components/Lobby";
+import { useSocket } from "./useSocket";
 
 function App() {
-  const [screen, setScreen] = useState<'lobby' | 'game'>('lobby');
-  const [roomId, setRoomId] = useState('');
+  const [screen, setScreen] = useState<"lobby" | "game">("lobby");
+  const [roomId, setRoomId] = useState("");
 
   const socket = useSocket();
 
   const handleRoomCreated = (id: string, name: string) => {
     setRoomId(id);
-    setScreen('game');
+    setScreen("game");
     socket.createRoom(id, name);
   };
 
   const handleRoomJoined = (id: string, name: string) => {
     setRoomId(id);
-    setScreen('game');
+    setScreen("game");
     socket.joinRoom(id, name);
   };
 
   const handleBackToLobby = () => {
-    setScreen('lobby');
-    setRoomId('');
+    setScreen("lobby");
+    setRoomId("");
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <header className="py-4 px-6 border-b border-white/10">
-        <h1 className="text-2xl font-bold text-center text-rose-400">
+    <Box minH="100vh" display="flex" flexDirection="column" bg="#0b1510">
+      <Box
+        as="header"
+        py={5}
+        px={6}
+        borderBottom="1px solid"
+        borderColor="whiteAlpha.200"
+        bg="blackAlpha.300"
+        backdropFilter="blur(8px)"
+      >
+        <Heading
+          as="h1"
+          size="xl"
+          textAlign="center"
+          color="brand.300"
+          letterSpacing="0.02em"
+        >
           Memory Card Battle
-        </h1>
-        <p className="text-center text-sm text-white/60 mt-1">
+        </Heading>
+        <Text textAlign="center" fontSize="sm" color="whiteAlpha.600" mt={1}>
           Match pairs. Sabotage your opponent. Win.
-        </p>
-      </header>
+        </Text>
+      </Box>
 
-      <main className="flex-1 p-6">
-        {screen === 'lobby' ? (
+      <Box as="main" flex={1} p={{ base: 4, md: 6 }}>
+        {screen === "lobby" ? (
           <Lobby
             onCreateRoom={handleRoomCreated}
             onJoinRoom={handleRoomJoined}
@@ -46,14 +61,10 @@ function App() {
             error={socket.error}
           />
         ) : (
-          <GameBoard
-            {...socket}
-            roomId={roomId}
-            onBack={handleBackToLobby}
-          />
+          <GameBoard {...socket} roomId={roomId} onBack={handleBackToLobby} />
         )}
-      </main>
-    </div>
+      </Box>
+    </Box>
   );
 }
 

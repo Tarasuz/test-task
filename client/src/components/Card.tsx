@@ -1,3 +1,5 @@
+import { Box, Button } from '@chakra-ui/react';
+
 interface CardProps {
   index: number;
   emoji: string;
@@ -20,43 +22,72 @@ export function Card({
   const canFlip = !isMatched && !isFlipped && !disabled && !isUnflipping;
 
   return (
-    <button
+    <Button
       type="button"
       onClick={onFlip}
-      disabled={!canFlip}
-      className={`
-        relative w-full aspect-square rounded-xl border-2 overflow-hidden
-        transition-all duration-300
-        ${canFlip ? 'cursor-pointer hover:scale-[1.02] hover:border-rose-400/50' : 'cursor-default'}
-        ${isMatched ? 'border-emerald-500/50 bg-emerald-500/20' : 'border-white/20 bg-white/5'}
-        ${isUnflipping ? 'animate-pulse' : ''}
-      `}
+      isDisabled={!canFlip}
+      opacity={1}
+      variant="unstyled"
+      position="relative"
+      w="full"
+      p={0}
+      minH={0}
+      h="auto"
+      aspectRatio={1}
+      borderRadius="xl"
+      borderWidth={2}
+      overflow="hidden"
+      transition="all 0.3s"
+      cursor={canFlip ? 'pointer' : 'default'}
+      _hover={canFlip ? { transform: 'scale(1.02)', borderColor: 'brand.400' } : {}}
+      borderColor={isMatched ? 'green.500' : 'whiteAlpha.200'}
+      bg={isMatched ? 'green.500/20' : 'whiteAlpha.50'}
+      animation={isUnflipping ? 'pulse 0.5s ease-in-out' : undefined}
       style={{ perspective: '600px' }}
+      _disabled={{ opacity: 1, cursor: 'default' }}
     >
-      <div
-        className="relative w-full h-full"
+      <Box
+        position="relative"
+        w="full"
+        h="full"
         style={{
           transformStyle: 'preserve-3d',
           transform: showFront ? 'rotateY(180deg)' : 'rotateY(0deg)',
           transition: 'transform 0.4s ease-out',
         }}
       >
-        <div
-          className="absolute inset-0 flex items-center justify-center bg-white/10 border-inherit rounded-[10px]"
+        <Box
+          position="absolute"
+          inset={0}
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          bg="whiteAlpha.100"
+          borderRadius="inherit"
           style={{ backfaceVisibility: 'hidden' }}
         >
-          <span className="text-3xl text-white/50 font-bold">?</span>
-        </div>
-        <div
-          className="absolute inset-0 flex items-center justify-center bg-white/5 rounded-[10px]"
+          <Box as="span" fontSize="3xl" color="whiteAlpha.500" fontWeight="bold">
+            ?
+          </Box>
+        </Box>
+        <Box
+          position="absolute"
+          inset={0}
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          bg="whiteAlpha.50"
+          borderRadius="inherit"
           style={{
             backfaceVisibility: 'hidden',
             transform: 'rotateY(180deg)',
           }}
         >
-          <span className="text-4xl">{emoji}</span>
-        </div>
-      </div>
-    </button>
+          <Box as="span" fontSize="4xl">
+            {emoji}
+          </Box>
+        </Box>
+      </Box>
+    </Button>
   );
 }

@@ -1,4 +1,12 @@
-import { useState } from 'react';
+import {
+  Box,
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  Text,
+} from "@chakra-ui/react";
+import { useState } from "react";
 
 interface LobbyProps {
   onCreateRoom: (roomId: string, playerName: string) => void;
@@ -7,107 +15,134 @@ interface LobbyProps {
   error: string | null;
 }
 
-export function Lobby({ onCreateRoom, onJoinRoom, connected, error }: LobbyProps) {
-  const [playerName, setPlayerName] = useState('');
-  const [roomId, setRoomId] = useState('');
-  const [mode, setMode] = useState<'create' | 'join'>('create');
+export function Lobby({
+  onCreateRoom,
+  onJoinRoom,
+  connected,
+  error,
+}: LobbyProps) {
+  const [playerName, setPlayerName] = useState("");
+  const [roomId, setRoomId] = useState("");
+  const [mode, setMode] = useState<"create" | "join">("create");
 
   const handleCreate = (e: React.FormEvent) => {
     e.preventDefault();
     const id = crypto.randomUUID().slice(0, 8);
-    onCreateRoom(id, playerName || 'Player 1');
+    onCreateRoom(id, playerName || "Player 1");
   };
 
   const handleJoin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (roomId.trim()) onJoinRoom(roomId.trim(), playerName || 'Player 2');
+    if (roomId.trim()) onJoinRoom(roomId.trim(), playerName || "Player 2");
   };
 
   return (
-    <div className="max-w-md mx-auto">
-      <div className="flex items-center gap-2 mb-6">
-        <div
-          className={`w-2 h-2 rounded-full ${connected ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500'}`}
+    <Box
+      maxW="md"
+      mx="auto"
+      p={{ base: 4, md: 6 }}
+      borderRadius="2xl"
+      borderWidth={1}
+      borderColor="whiteAlpha.200"
+      bg="blackAlpha.300"
+      boxShadow="0 10px 30px rgba(0, 0, 0, 0.25)"
+    >
+      <Box display="flex" alignItems="center" gap={2} mb={6}>
+        <Box
+          w={2}
+          h={2}
+          borderRadius="full"
+          bg={connected ? "green.500" : "red.500"}
+          animation={connected ? "pulse 1.5s ease-in-out infinite" : undefined}
         />
-        <span className="text-sm text-white/70">
-          {connected ? 'Connected' : 'Connecting...'}
-        </span>
-      </div>
+        <Text fontSize="sm" color="whiteAlpha.700">
+          {connected ? "Connected" : "Connecting..."}
+        </Text>
+      </Box>
 
       {error && (
-        <div className="mb-4 p-3 rounded-lg bg-rose-500/20 text-rose-300 text-sm">
+        <Box
+          mb={4}
+          p={3}
+          borderRadius="lg"
+          bg="red.500/20"
+          color="red.300"
+          fontSize="sm"
+        >
           {error}
-        </div>
+        </Box>
       )}
 
-      <div className="flex gap-2 mb-6">
-        <button
-          type="button"
-          onClick={() => setMode('create')}
-          className={`flex-1 py-2 rounded-lg font-medium transition ${
-            mode === 'create'
-              ? 'bg-rose-500/30 text-rose-300 border border-rose-500/50'
-              : 'bg-white/5 text-white/60 border border-white/10'
-          }`}
+      <Box
+        display="flex"
+        gap={2}
+        mb={6}
+        p={1}
+        borderRadius="xl"
+        bg="whiteAlpha.50"
+      >
+        <Button
+          flex={1}
+          variant={mode === "create" ? "solid" : "outline"}
+          colorScheme={mode === "create" ? "brand" : "gray"}
+          onClick={() => setMode("create")}
         >
           Create Room
-        </button>
-        <button
-          type="button"
-          onClick={() => setMode('join')}
-          className={`flex-1 py-2 rounded-lg font-medium transition ${
-            mode === 'join'
-              ? 'bg-rose-500/30 text-rose-300 border border-rose-500/50'
-              : 'bg-white/5 text-white/60 border border-white/10'
-          }`}
+        </Button>
+        <Button
+          flex={1}
+          variant={mode === "join" ? "solid" : "outline"}
+          colorScheme={mode === "join" ? "brand" : "gray"}
+          onClick={() => setMode("join")}
         >
           Join Room
-        </button>
-      </div>
+        </Button>
+      </Box>
 
-      <form
-        onSubmit={mode === 'create' ? handleCreate : handleJoin}
-        className="space-y-4"
-      >
-        <div>
-          <label className="block text-sm text-white/70 mb-1">Your name</label>
-          <input
-            type="text"
-            value={playerName}
-            onChange={(e) => setPlayerName(e.target.value)}
-            placeholder={mode === 'create' ? 'Player 1' : 'Player 2'}
-            className="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 focus:border-rose-500/50 focus:outline-none"
-          />
-        </div>
-
-        {mode === 'join' && (
-          <div>
-            <label className="block text-sm text-white/70 mb-1">Room code</label>
-            <input
-              type="text"
-              value={roomId}
-              onChange={(e) => setRoomId(e.target.value)}
-              placeholder="e.g. ABC12345"
-              className="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 focus:border-rose-500/50 focus:outline-none font-mono"
-              maxLength={8}
+      <form onSubmit={mode === "create" ? handleCreate : handleJoin}>
+        <Box display="flex" flexDirection="column" gap={4}>
+          <FormControl>
+            <FormLabel fontSize="sm" color="whiteAlpha.700">
+              Your name
+            </FormLabel>
+            <Input
+              value={playerName}
+              onChange={(e) => setPlayerName(e.target.value)}
+              placeholder={mode === "create" ? "Player 1" : "Player 2"}
             />
-          </div>
-        )}
+          </FormControl>
 
-        <button
-          type="submit"
-          disabled={!connected || (mode === 'join' && !roomId.trim())}
-          className="w-full py-3 rounded-lg font-semibold bg-rose-500 text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-rose-600 transition"
-        >
-          {mode === 'create' ? 'Create & Wait for Opponent' : 'Join Game'}
-        </button>
+          {mode === "join" && (
+            <FormControl>
+              <FormLabel fontSize="sm" color="whiteAlpha.700">
+                Room code
+              </FormLabel>
+              <Input
+                value={roomId}
+                onChange={(e) => setRoomId(e.target.value)}
+                placeholder="e.g. ABC12345"
+                maxLength={8}
+                fontFamily="mono"
+              />
+            </FormControl>
+          )}
+
+          <Button
+            type="submit"
+            colorScheme="brand"
+            size="lg"
+            isDisabled={!connected || (mode === "join" && !roomId.trim())}
+          >
+            {mode === "create" ? "Create & Wait for Opponent" : "Join Game"}
+          </Button>
+        </Box>
       </form>
 
-      {mode === 'create' && (
-        <p className="mt-4 text-xs text-white/50 text-center">
+      {mode === "create" && (
+        <Text mt={4} fontSize="xs" color="whiteAlpha.500" textAlign="center">
           Share the room code with your friend after creating
-        </p>
+        </Text>
       )}
-    </div>
+    </Box>
   );
 }

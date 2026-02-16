@@ -1,3 +1,5 @@
+import { Box } from '@chakra-ui/react';
+
 interface OpponentCardProps {
   emoji: string;
   isMatched: boolean;
@@ -8,16 +10,22 @@ export function OpponentCard({ emoji, isMatched, isFlipped }: OpponentCardProps)
   const showFront = isFlipped || isMatched;
 
   return (
-    <div
-      className={`
-        relative w-full aspect-square rounded-xl border-2 overflow-hidden
-        flex items-center justify-center
-        ${isMatched ? 'border-emerald-500/50 bg-emerald-500/20' : 'border-white/20 bg-white/5'}
-      `}
+    <Box
+      position="relative"
+      w="full"
+      aspectRatio={1}
+      borderRadius="xl"
+      borderWidth={2}
+      overflow="hidden"
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      borderColor={isMatched ? 'green.500' : 'whiteAlpha.200'}
+      bg={isMatched ? 'green.500/20' : 'whiteAlpha.50'}
     >
-      <span className="text-3xl">
+      <Box as="span" fontSize="3xl">
         {showFront ? emoji : '?'}
-      </span>
-    </div>
+      </Box>
+    </Box>
   );
 }
